@@ -4,11 +4,11 @@ import { DealerController } from "../controllers/dealerController";
 
 const router = express.Router();
 
-router.post("/dealerCreate", DealerController.create);
-router.get("/dealerDetails", DealerController.getAll);
-router.get("/dealerDetails/:id", DealerController.getDetails);
+router.post("/create-d", DealerController.create);
+// router.get("/getDealerDetails", DealerController.getAll);
+// router.get("/getDealerDetails/:id", DealerController.getDetails);
 
 // New POST route (userId in body)
-router.post("/dealersByUser", DealerController.getByUser);
+router.post("/view", DealerController.getByUser);
 
 export default router;

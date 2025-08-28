@@ -6,7 +6,7 @@ const router = express.Router();
 
 // Use multer.fields() to handle multiple files
 router.put(
-  "/dealer/editDetails",
+  "/editdetails",
   upload.fields([
     { name: "stockFile"}, 
     { name: "media"},     
