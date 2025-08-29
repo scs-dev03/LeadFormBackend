@@ -27,7 +27,7 @@ router.get("/business-types", async (_req, res) => {
   }
 });
 
-router.get("/location-types", async (_req, res) => {
+router.get("/all-location-types", async (_req, res) => {
   try {
     const rows = await locationSvc.getAll();
     res.json(rows);
@@ -36,15 +36,20 @@ router.get("/location-types", async (_req, res) => {
   }
 });
 
-router.get("/location-types/:businessTypeId", async (req, res) => {
+// 🔄 Changed from GET with params → POST with body
+router.post("/location-types", async (req, res) => {
   try {
-    const id = Number(req.params.businessTypeId);
-    if (Number.isNaN(id)) return res.status(400).json({ error: "businessTypeId must be a number" });
-    const rows = await locationSvc.getByBusinessTypeId(id);
+    const { businessTypeId } = req.body;
+
+    if (!businessTypeId || Number.isNaN(Number(businessTypeId))) {
+      return res.status(400).json({ error: "businessTypeId must be a valid number" });
+    }
+
+    const rows = await locationSvc.getByBusinessTypeId(Number(businessTypeId));
     res.json(rows);
   } catch (e) {
+    console.error("Error fetching location types:", e);
     res.status(500).json({ error: "Failed to fetch location types for business type" });
   }
 });
-
 export default router;
