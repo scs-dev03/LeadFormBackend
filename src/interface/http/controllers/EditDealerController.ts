@@ -21,7 +21,6 @@ export class DealerController {
       // Base S3 URL
       const bucketUrl = `https://${process.env.S3_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/`;
 
-      // Map files to DTO with full URLs
       const body: EditDealerDetailsDTO = {
         dealerId: Number(req.body.dealerId),
         locationId: Number(req.body.locationId),
@@ -48,6 +47,84 @@ export class DealerController {
       res.status(err.statusCode || 500).json({
         error: err.message || "Failed to update dealer details",
       });
+    }
+  }
+static async editDealer(req: Request, res: Response) {
+    try {
+        // console.log("FormData body:", req.body);
+        // console.log("Uploaded file:", req.file);
+
+        const file = req.file as S3File | undefined;
+        const bucketUrl = `https://${process.env.S3_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/`;
+
+        await dealerService.editDealer({
+            dealerId: Number(req.body.dealerId),
+            brandId: req.body.brandId ? Number(req.body.brandId) : undefined,
+            dealerName: req.body.dealerName,
+            businessTypeID: req.body.businessTypeID ? Number(req.body.businessTypeID) : undefined,
+            spokespersonName: req.body.spokespersonName,
+            spokespersonPhone: req.body.spokespersonPhone,
+            spokespersonEmail: req.body.spokespersonEmail,
+            stockFile: file ? bucketUrl + file.key : undefined,
+        });
+
+        res.json({ message: "Dealer details updated successfully" });
+    } catch (err: any) {
+        console.error(err);
+        res.status(500).json({ error: "Failed to update dealer details" });
+    }
+}
+
+  // 2. Location edit
+  static async editLocation(req: Request, res: Response) {
+    try {
+      console.log("FormData body:", req.body);
+      console.log("Uploaded files:", req.files);
+      const files = req.files as any;
+      const bucketUrl = `https://${process.env.S3_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/`;
+      const stockFile = files?.stockFile ? bucketUrl + files.stockFile[0].key : undefined;
+      const media = files?.media ? files.media.map((f: any) => bucketUrl + f.key) : undefined;
+
+    await dealerService.editLocation({
+    locationId: Number(req.body.locationId),
+    locationName: req.body.locationName,
+    locationTypeId: req.body.locationTypeId,
+    businessTypeId: req.body.businessTypeId,
+    auditId: req.body.auditId,
+    pincode: req.body.pincode,
+    city: req.body.city,
+    state: req.body.state,
+    remark: req.body.remark,
+    partLine: req.body.partline,
+    quantity: req.body.quantity,
+    value: req.body.value,
+    stockFile,
+    media
+});
+
+      res.json({ message: "Location details updated successfully" });
+    } catch (err: any) {
+      console.error(err);
+      res.status(500).json({ error: "Failed to update location details" });
+    }
+  }
+
+  // 3. Location contact edit
+  static async editLocationContact(req: Request, res: Response) {
+    try {
+      console.log("FormData body:", req.body);
+      await dealerService.editContact({
+        locationId: Number(req.body.locationId),
+        name: req.body.name,
+        phone: req.body.phone,
+        email: req.body.email,
+        designation: req.body.designation
+      });
+
+      res.json({ message: "Location contact updated successfully" });
+    } catch (err: any) {
+      console.error(err);
+      res.status(500).json({ error: "Failed to update contact details" });
     }
   }
 }

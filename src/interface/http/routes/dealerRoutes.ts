@@ -1,4 +1,3 @@
-// dealerRoutes.ts
 import express from "express";
 import { DealerController } from "../controllers/dealerController";
 
@@ -10,5 +9,6 @@ router.post("/create-d", DealerController.create);
 
 // New POST route (userId in body)
 router.post("/view", DealerController.getByUser);
+router.post("/viewDealerByBrand", DealerController.viewDealerByBrand);
 
 export default router;

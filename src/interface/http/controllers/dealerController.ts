@@ -6,23 +6,23 @@ import { GetDealersByUser } from "../../../application/services/GetDealersByUser
 const dealerRepo = new DealerRepositoryMSSQL();
 
 export class DealerController {
-   static create = [
-    upload.single("stockFile"),
-    async (req: Request, res: Response) => {
-        try {
-            const dealerData = req.body;
-            if (req.file && (req.file as any).location) {
-                dealerData.stockFile = (req.file as any).location;
-            }
+    static create = [
+        upload.single("stockFile"),
+        async (req: Request, res: Response) => {
+            try {
+                const dealerData = req.body;
+                if (req.file && (req.file as any).location) {
+                    dealerData.stockFile = (req.file as any).location;
+                }
 
-            const result = await dealerRepo.create(dealerData);
-            res.status(201).json({ message: "Dealer created", dealerID: result.id });
-        } catch (err: any) {
-            console.error(err);
-            res.status(500).json({ error: err.message || "Failed to create dealer" });
+                const result = await dealerRepo.create(dealerData);
+                res.status(201).json({ message: "Dealer created", dealerID: result.id });
+            } catch (err: any) {
+                console.error(err);
+                res.status(500).json({ error: err.message || "Failed to create dealer" });
+            }
         }
-    }
-];
+    ];
     // Get all dealers (optionally filter by brandId / businessTypeId)
     static async getAll(req: Request, res: Response) {
         try {
@@ -50,7 +50,6 @@ export class DealerController {
             res.status(500).json({ error: "Failed to fetch dealer details" });
         }
     }
-    // DealerController.ts
     static async getByUser(req: Request, res: Response) {
         try {
             const { userId } = req.body;
@@ -68,4 +67,26 @@ export class DealerController {
             res.status(500).json({ error: "Failed to fetch dealers by user" });
         }
     }
+   static async viewDealerByBrand(req: Request, res: Response) {
+    try {
+        const { brandId, userId } = req.body;
+
+        if (!brandId) {
+            return res.status(400).json({ error: "brandId is required in body" });
+        }
+        if (!userId) {
+            return res.status(400).json({ error: "userId is required in body" });
+        }
+
+        const dealerView = await dealerRepo.getDealerByBrand(Number(brandId), Number(userId));
+        if (!dealerView || dealerView.length === 0) {
+            return res.status(404).json({ error: "No dealer found for this brand and user" });
+        }
+
+        res.status(200).json(dealerView);
+    } catch (err: any) {
+        console.error(err);
+        res.status(500).json({ error: "Failed to fetch dealer view" });
+    }
+}
 }
