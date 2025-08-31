@@ -78,8 +78,8 @@ static async editDealer(req: Request, res: Response) {
   // 2. Location edit
   static async editLocation(req: Request, res: Response) {
     try {
-      console.log("FormData body:", req.body);
-      console.log("Uploaded files:", req.files);
+      // console.log("FormData body:", req.body);
+      // console.log("Uploaded files:", req.files);
       const files = req.files as any;
       const bucketUrl = `https://${process.env.S3_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/`;
       const stockFile = files?.stockFile ? bucketUrl + files.stockFile[0].key : undefined;
