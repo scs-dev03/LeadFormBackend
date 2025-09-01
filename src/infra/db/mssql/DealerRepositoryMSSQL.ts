@@ -182,9 +182,9 @@ WHERE d.CreatedBy = @UserId
     `);
         return result.recordset;
     }
-   async getDealerByBrand(brandId: number, userId: number): Promise<any> {
-    const pool = await poolPromise;
-    const query = `
+    async getDealerByBrand(brandId: number, userId: number): Promise<any> {
+        const pool = await poolPromise;
+        const query = `
         SELECT 
             it.Industry_Type_ID AS IndustryId,
             it.Industry_Type_Name AS IndustryName,
@@ -233,78 +233,83 @@ WHERE d.CreatedBy = @UserId
         WHERE b.BrandID = @brandId AND d.CreatedBy = @UserId;
     `;
 
-    const result = await pool.request()
-        .input("brandId", sql.Int, brandId)
-        .input("UserId", sql.Int, userId)
-        .query(query);
+        const result = await pool.request()
+            .input("brandId", sql.Int, brandId)
+            .input("UserId", sql.Int, userId)
+            .query(query);
 
-    const rows = result.recordset;
-    if (!rows.length) return null;
+        const rows = result.recordset;
+        if (!rows.length) return null;
 
-    const first = rows[0];
+        const first = rows[0];
 
-    // Dealer-level info
-    const dealerDetails = {
-        dealerId: first.DealerId,
-        dealerName: first.DealerName,
-        brand: { id: first.BrandId, name: first.BrandName },
-        industry: { id: first.IndustryId, name: first.IndustryName },
-        segment: { id: first.SegmentId, name: first.SegmentName },
-        businessType: { id: first.BusinessTypeId, name: first.BusinessTypeName },
-        spokesperson: {
-            name: first.SpokespersonName,
-            phone: first.SpokespersonPhone,
-            email: first.SpokespersonEmail
-        },
-        stock: first.StockUpload
-    };
+        // Dealer-level info
+        const dealerDetails = {
+            dealerId: first.DealerId,
+            dealerName: first.DealerName,
+            brand: { id: first.BrandId, name: first.BrandName },
+            industry: { id: first.IndustryId, name: first.IndustryName },
+            segment: { id: first.SegmentId, name: first.SegmentName },
+            businessType: { id: first.BusinessTypeId, name: first.BusinessTypeName },
+            spokesperson: {
+                name: first.SpokespersonName,
+                phone: first.SpokespersonPhone,
+                email: first.SpokespersonEmail
+            },
+            stock: first.StockUpload
+        };
 
-    // Group by location
-    const locationsMap = new Map<number, any>();
+        // Group by location
+        const locationsMap = new Map<number, any>();
+        const contacts: any[] = [];
 
-    rows.forEach(row => {
-        if (!locationsMap.has(row.LocationId)) {
-            locationsMap.set(row.LocationId, {
-                locationId: row.LocationId,
-                locationName: row.LocationName,
-                auditCategory: { id: row.AuditCategoryId, name: row.AuditCategoryName },
-                locationType: { id: row.LocationTypeId, name: row.LocationTypeName },
-                pinCode: row.PinCode,
-                city: row.City,
-                state: row.State,
-                remark: row.LocationRemark,
-                stock: row.StockUpload,
-                partline: row.partline,
-                quantity: row.quantity,
-                value: row.value,
-                mediaFiles: [],
-                contactDetails: []
-            });
-        }
+        rows.forEach(row => {
+            if (!locationsMap.has(row.LocationId)) {
+                locationsMap.set(row.LocationId, {
+                    locationId: row.LocationId,
+                    locationName: row.LocationName,
+                    auditCategory: { id: row.AuditCategoryId, name: row.AuditCategoryName },
+                    locationType: { id: row.LocationTypeId, name: row.LocationTypeName },
+                    pinCode: row.PinCode,
+                    city: row.City,
+                    state: row.State,
+                    remark: row.LocationRemark,
+                    stock: row.StockUpload,
+                    partline: row.partline,
+                    quantity: row.quantity,
+                    value: row.value,
+                    mediaFiles: []
+                });
+            }
 
-        const loc = locationsMap.get(row.LocationId);
+            const loc = locationsMap.get(row.LocationId);
 
-        // Media files
-        if (row.MediaId && !loc.mediaFiles.some((m: any) => m.id === row.MediaId)) {
-            loc.mediaFiles.push({ id: row.MediaId, url: row.MediaFile });
-        }
+            // Media files
+            if (row.MediaId && !loc.mediaFiles.some((m: any) => m.id === row.MediaId)) {
+                loc.mediaFiles.push({ id: row.MediaId, url: row.MediaFile });
+            }
+            // Contacts
+            if (row.ContactId) {
+                const contactObj = {
+                    id: row.ContactId,
+                    locationId: row.LocationId,
+                    locationName: row.LocationName,
+                    name: row.ContactName,
+                    phone: row.ContactPhone,
+                    email: row.ContactEmail,
+                    designation: row.ContactDesignation
+                };
 
-        // Contacts
-        if (row.ContactId && !loc.contactDetails.some((c: any) => c.id === row.ContactId)) {
-            loc.contactDetails.push({
-                id: row.ContactId,
-                locationName: row.LocationName,
-                name: row.ContactName,
-                phone: row.ContactPhone,
-                email: row.ContactEmail,
-                designation: row.ContactDesignation
-            });
-        }
-    });
-
-    return {
-        dealerDetails,
-        locationDetails: Array.from(locationsMap.values())
-    };
-}
+                // Add to global contacts
+                if (!contacts.some(c => c.id === row.ContactId)) {
+                    contacts.push(contactObj);
+                }
+            }
+        });
+        return {
+            dealerDetails,
+            locationDetails: Array.from(locationsMap.values()),
+            contacts
+        };
+    }
 }

@@ -51,7 +51,7 @@ export class LocationDetailsController {
         };
 
         const result = await service.createLocationDetails(data);
-        res.status(201).json(result);
+        res.status(201).json({ message: "Location details created", locationId: result.id,locationName: result.locationName });
       } catch (err: any) {
         console.error(err);
         res.status(err.statusCode || 500).json({

@@ -33,7 +33,7 @@ router.put(
 // Location contact edit
 router.put(
   "/edit-location-contact",
-  DealerController.editLocationContact
+  DealerController.bulkEditLocationContacts
 );
 
 export default router;

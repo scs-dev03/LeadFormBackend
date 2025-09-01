@@ -127,4 +127,16 @@ static async editDealer(req: Request, res: Response) {
       res.status(500).json({ error: "Failed to update contact details" });
     }
   }
+
+  static async bulkEditLocationContacts(req: Request, res: Response) {
+  try {
+    await dealerService.bulkEditContacts(req.body.contacts);
+
+    res.json({ message: "Bulk location contacts updated successfully" });
+  } catch (err: any) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to bulk update contact details" });
+  }
+}
+
 }

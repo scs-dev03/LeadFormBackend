@@ -23,9 +23,14 @@ export class DealerService {
   async editLocation(data: EditLocationDTO): Promise<void> {
     return this.dealerRepo.editLocationDetails(data);
   }
+async editContact(data: EditContactDTO): Promise<void> {
+  return this.dealerRepo.editLocationContact(data);
+}
 
-  // contact-level edit
-  async editContact(data: EditContactDTO): Promise<void> {
-    return this.dealerRepo.editLocationContact(data);
+async bulkEditContacts(contacts: EditContactDTO[]): Promise<void> {
+  for (const contact of contacts) {
+    await this.dealerRepo.editLocationContact(contact);
   }
 }
+}
+ 
