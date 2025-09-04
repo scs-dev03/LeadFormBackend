@@ -9,14 +9,14 @@ export class LocationContactService {
     const toInsert: LocationContact[] = [];
 
     for (const c of contacts) {
-      const existing = await this.repo.findByLocationId(c.dealerLocationId);
+      const existing = await this.repo.findByLocationId(c.location);
       if (existing) {
-        throw new AppError(`Contact already exists for locationId ${c.dealerLocationId}`, 400);
+        throw new AppError(`Contact already exists for locationId ${c.location}`, 400);
       }
 
       toInsert.push(new LocationContact(
         null,
-        c.dealerLocationId,
+        c.location,
         c.designation,
         c.name,
         c.phone || null,
