@@ -31,7 +31,7 @@ export class LocationContactRepositoryMSSQL implements ILocationContactRepositor
 
     for (const contact of contacts) {
       const rs = await pool.request()
-        .input("dealerLocationId", sql.Int, contact.dealerLocationId)
+        .input("dealerLocationId", sql.Int, contact.location)
         .input("designation", sql.NVarChar(100), contact.designation)
         .input("name", sql.NVarChar(200), contact.name)
         .input("phone", sql.NVarChar(50), contact.phone)
