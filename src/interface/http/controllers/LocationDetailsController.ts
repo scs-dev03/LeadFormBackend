@@ -30,7 +30,8 @@ export class LocationDetailsController {
         if (files?.stockFile?.[0]) {
           stockFile = (files.stockFile[0] as any).location;
         }
-
+        console.log(req.body);
+        console.log(files);
         // Store media URLs
         const mediaUrls: string[] = [];
         if (files?.media) {

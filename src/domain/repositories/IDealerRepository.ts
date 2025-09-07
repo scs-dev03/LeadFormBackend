@@ -1,4 +1,5 @@
 import { Dealer } from "../entities/Dealer";
+import { DealerApiResponse } from "../entities/Mail";
 
 export interface IDealerRepository {
   // Get all dealers, optionally filtered by brandId or businessTypeId
@@ -17,4 +18,6 @@ export interface IDealerRepository {
   // Create a new dealer
   create(dealerData: Omit<Dealer, "id" | "createdAt" | "updatedAt">): Promise<{ id: number }>;
   getDealersByUser(userId: number): Promise<Dealer[]>;
+  // getDealerByBrand(brandId: number, userId: number): Promise<Dealer | null>;
+  getDealerByBrand(brandId: number, userId: number): Promise<DealerApiResponse | null>;
 }

@@ -1,7 +1,7 @@
 export class LocationContact {
   constructor(
     public id: number | null,
-    public dealerLocationId: number,
+    public location: number,
     public designation: string,
     public name: string,
     public phone: string | null,
