@@ -11,8 +11,8 @@ const transporter = nodemailer.createTransport({
 
 export class NodemailerMailService implements IMailService {
   async send(input: SendMailInput): Promise<void> {
-    console.log(process.env.EMAILID);
-    console.log(process.env.EMAILPASSWORD);
+    // console.log(process.env.EMAILID);
+    // console.log(process.env.EMAILPASSWORD);
     await transporter.sendMail({
       from: input.from ?? process.env.EMAILID,
       to: input.to,

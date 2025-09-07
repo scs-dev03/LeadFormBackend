@@ -44,7 +44,7 @@ export class DealerMailController {
       // 1. Generate PDF
       const buildPdf = new BuildDealerPdf(repo, pdfService);
       const ip:any = getClientIp(req);
-      console.log("Request IP:", ip);
+     // console.log("Request IP:", ip);
       const { filename, buffer } = await buildPdf.execute({
         userId: Number(userId),
         brandId: Number(brandId),
@@ -58,7 +58,7 @@ export class DealerMailController {
       }
       const filePath = path.join(uploadsDir, filename);
       fs.writeFileSync(filePath, buffer);
-      console.log("PDF saved at:", filePath);
+     // console.log("PDF saved at:", filePath);
      
       // 3. Mail sending code commented out for now
       const userMailOptions = MailOptionsBuilder.buildMailOptions(
@@ -85,7 +85,7 @@ export class DealerMailController {
         filePath,
       });
     } catch (err: any) {
-      console.error("sendOnboardingMail error:", err);
+     // console.error("sendOnboardingMail error:", err);
       res.status(500).json({ error: err.message || "Failed to generate PDF" });
     }
   }

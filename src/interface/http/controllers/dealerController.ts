@@ -18,7 +18,7 @@ export class DealerController {
                 const result = await dealerRepo.create(dealerData);
                 res.status(201).json({ message: "Dealer created", dealerID: result.id });
             } catch (err: any) {
-                console.error(err);
+               // console.error(err);
                 res.status(500).json({ error: err.message || "Failed to create dealer" });
             }
         }
@@ -33,7 +33,7 @@ export class DealerController {
             const dealers = await dealerRepo.getDealers(filters);
             res.status(200).json(dealers);
         } catch (err) {
-            console.error(err);
+           // console.error(err);
             res.status(500).json({ error: "Failed to fetch dealers" });
         }
     }
@@ -46,7 +46,7 @@ export class DealerController {
             if (!dealerDetails) return res.status(404).json({ error: "Dealer not found" });
             res.status(200).json(dealerDetails);
         } catch (err) {
-            console.error(err);
+            //console.error(err);
             res.status(500).json({ error: "Failed to fetch dealer details" });
         }
     }
@@ -63,7 +63,7 @@ export class DealerController {
 
             res.status(200).json(dealers);
         } catch (err) {
-            console.error(err);
+            //console.error(err);
             res.status(500).json({ error: "Failed to fetch dealers by user" });
         }
     }
@@ -85,7 +85,7 @@ export class DealerController {
 
         res.status(200).json(dealerView);
     } catch (err: any) {
-        console.error(err);
+        //console.error(err);
         res.status(500).json({ error: "Failed to fetch dealer view" });
     }
 }

@@ -51,9 +51,9 @@ async function seedCountries() {
   const rawCode = row.getCell(3).value;
   const countryCodes = normalizeCountryCode(rawCode);
 
-  console.log("Country:", country);
-  console.log("IsoCode:", isoCode);
-  console.log("CountryCode list:", countryCodes);
+  // console.log("Country:", country);
+  // console.log("IsoCode:", isoCode);
+  // console.log("CountryCode list:", countryCodes);
 
   for (const code of countryCodes) {
     await pool
@@ -68,10 +68,10 @@ async function seedCountries() {
   }
 }
 
-    console.log("✅ Countries seeded successfully!");
+    // console.log("Countries seeded successfully!");
     process.exit(0);
   } catch (error) {
-    console.error("❌ Error seeding countries:", error);
+    // console.error("Error seeding countries:", error);
     process.exit(1);
   }
 }

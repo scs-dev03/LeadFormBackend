@@ -18,11 +18,11 @@ const config: sql.config = {
 export const poolPromise = new sql.ConnectionPool(config)
   .connect()
   .then(pool => {
-    console.log("Connected to MSSQL");
+    //console.log("Connected to MSSQL");
     return pool;
   })
   .catch(err => {
-    console.error("Database connection failed", err);
+    //console.error("Database connection failed", err);
     process.exit(1);
   });
 

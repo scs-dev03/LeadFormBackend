@@ -12,8 +12,8 @@ interface S3File extends Express.Multer.File {
 export class DealerController {
   static async editDetails(req: Request, res: Response): Promise<void> {
     try {
-      console.log("FormData body:", req.body);
-      console.log("Uploaded files:", req.files);
+      // console.log("FormData body:", req.body);
+      // console.log("Uploaded files:", req.files);
 
       // Type files as S3File[]
       const files = req.files as { [fieldname: string]: S3File[] } | undefined;
@@ -43,7 +43,7 @@ export class DealerController {
 
       res.json({ message: "Dealer details updated successfully" });
     } catch (err: any) {
-      console.error("Edit failed:", err);
+      //console.error("Edit failed:", err);
       res.status(err.statusCode || 500).json({
         error: err.message || "Failed to update dealer details",
       });
@@ -70,7 +70,7 @@ static async editDealer(req: Request, res: Response) {
 
         res.json({ message: "Dealer details updated successfully" });
     } catch (err: any) {
-        console.error(err);
+        //console.error(err);
         res.status(500).json({ error: "Failed to update dealer details" });
     }
 }
@@ -104,7 +104,7 @@ static async editDealer(req: Request, res: Response) {
 
       res.json({ message: "Location details updated successfully" });
     } catch (err: any) {
-      console.error(err);
+     // console.error(err);
       res.status(500).json({ error: "Failed to update location details" });
     }
   }
@@ -112,7 +112,7 @@ static async editDealer(req: Request, res: Response) {
   // 3. Location contact edit
   static async editLocationContact(req: Request, res: Response) {
     try {
-      console.log("FormData body:", req.body);
+      //console.log("FormData body:", req.body);
       await dealerService.editContact({
         locationId: Number(req.body.locationId),
         name: req.body.name,
@@ -123,7 +123,7 @@ static async editDealer(req: Request, res: Response) {
 
       res.json({ message: "Location contact updated successfully" });
     } catch (err: any) {
-      console.error(err);
+      //console.error(err);
       res.status(500).json({ error: "Failed to update contact details" });
     }
   }
@@ -134,7 +134,7 @@ static async editDealer(req: Request, res: Response) {
 
     res.json({ message: "Bulk location contacts updated successfully" });
   } catch (err: any) {
-    console.error(err);
+    //console.error(err);
     res.status(500).json({ error: "Failed to bulk update contact details" });
   }
 }

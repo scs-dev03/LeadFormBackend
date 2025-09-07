@@ -15,7 +15,7 @@ export class LocationContactController {
       const result = await service.createContacts(req.body);
       res.status(201).json(result);
     } catch (err: any) {
-      console.error(err);
+      //console.error(err);
       res.status(err.statusCode || 500).json({ error: err.message || "Failed to create contacts" });
     }
   }

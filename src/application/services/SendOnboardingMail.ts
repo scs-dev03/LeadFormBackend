@@ -20,9 +20,9 @@ export class SendOnboardingMail {
                     { filename: params.attachment.filename, content: params.attachment.buffer }
                 ]
             });
-            console.log("Onboarding email sent successfully");
+            // console.log("Onboarding email sent successfully");
         } catch (err) {
-            console.log(err);
+            // console.log(err);
             throw err;
         }
     }

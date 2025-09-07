@@ -30,8 +30,8 @@ export class LocationDetailsController {
         if (files?.stockFile?.[0]) {
           stockFile = (files.stockFile[0] as any).location;
         }
-        console.log(req.body);
-        console.log(files);
+        // console.log(req.body);
+        // console.log(files);
         // Store media URLs
         const mediaUrls: string[] = [];
         if (files?.media) {
@@ -54,7 +54,7 @@ export class LocationDetailsController {
         const result = await service.createLocationDetails(data);
         res.status(201).json({ message: "Location details created", locationId: result.id,locationName: result.locationName });
       } catch (err: any) {
-        console.error(err);
+        // console.error(err);
         res.status(err.statusCode || 500).json({
           error: err.message || "Failed to create location details",
         });

@@ -48,7 +48,7 @@ router.post("/location-types", async (req, res) => {
     const rows = await locationSvc.getByBusinessTypeId(Number(businessTypeId));
     res.json(rows);
   } catch (e) {
-    console.error("Error fetching location types:", e);
+    // console.error("Error fetching location types:", e);
     res.status(500).json({ error: "Failed to fetch location types for business type" });
   }
 });
