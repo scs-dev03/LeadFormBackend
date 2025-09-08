@@ -8,7 +8,7 @@ export class LocationContactRepositoryMSSQL implements ILocationContactRepositor
     const pool = await poolPromise;
     const rs = await pool.request()
       .input("locationId", sql.Int, locationId)
-      .query(`SELECT * FROM Location_Contact WHERE Dealer_Location_Id = @locationId`);
+      .query(`SELECT * FROM AUD_LDF_contacts WHERE Dealer_Location_Id = @locationId`);
 
     const row = rs.recordset[0];
     if (!row) return null;
@@ -39,7 +39,7 @@ export class LocationContactRepositoryMSSQL implements ILocationContactRepositor
         .input("phone", sql.NVarChar(50), contact.phone)
         .input("email", sql.NVarChar(200), contact.email)
         .query(`
-          INSERT INTO Location_Contact (Dealer_Location_Id, Designation, Name,Country_Code,Phone, Email)
+          INSERT INTO AUD_LDF_contacts (Dealer_Location_Id, Designation, Name,Country_Code,Phone, Email)
           OUTPUT INSERTED.*
           VALUES (@dealerLocationId, @designation, @name,@Country_Code,@phone, @email)
         `);

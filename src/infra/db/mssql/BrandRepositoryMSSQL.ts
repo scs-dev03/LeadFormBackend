@@ -9,9 +9,9 @@ export class BrandRepositoryMSSQL implements IBrandRepository {
 
     let query = `
       SELECT DISTINCT b.BrandID AS id, b.BrandName AS name
-      FROM UAD_AUD_Brand_Master b
-      LEFT JOIN UAD_AUD_Segment_Master s ON b.SegmentID = s.SegmentID
-      LEFT JOIN UAD_AUD_Industry_Type_Master i ON s.Industry_Type_ID = i.Industry_Type_ID
+      FROM AUD_LDF_brandMaster b
+      LEFT JOIN AUD_LDF_segmentMaster s ON b.SegmentID = s.SegmentID
+      LEFT JOIN AUD_LDF_industryMaster i ON s.Industry_Type_ID = i.Industry_Type_ID
       WHERE 1=1
     `;
 
@@ -39,9 +39,9 @@ export class BrandRepositoryMSSQL implements IBrandRepository {
           b.BrandID, b.BrandName,
           s.SegmentID, s.SegmentName,
           i.Industry_Type_ID, i.Industry_Type_Name
-        FROM UAD_AUD_Brand_Master b
-        JOIN UAD_AUD_Segment_Master s ON s.SegmentID = b.SegmentID
-        JOIN UAD_AUD_Industry_Type_Master i ON i.Industry_Type_ID = s.Industry_Type_ID
+        FROM AUD_LDF_brandMaster b
+        JOIN AUD_LDF_segmentMaster s ON s.SegmentID = b.SegmentID
+        JOIN AUD_LDF_industryMaster i ON i.Industry_Type_ID = s.Industry_Type_ID
         WHERE b.BrandID = @brandId
       `);
 

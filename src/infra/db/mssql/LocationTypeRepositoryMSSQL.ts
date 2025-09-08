@@ -9,7 +9,7 @@ export class LocationTypeRepositoryMSSQL {
       .input("businessTypeId", sql.Int, businessTypeId)
       .query(`
         SELECT lt.id, lt.name, lt.business_type_id
-        FROM Location_Type lt
+        FROM AUD_LDF_locationType lt
         WHERE lt.business_type_id = @businessTypeId
         ORDER BY lt.name
       `);
@@ -20,8 +20,8 @@ export class LocationTypeRepositoryMSSQL {
     const pool = await poolPromise;
     const result = await pool.request().query(`
       SELECT lt.id, lt.name, lt.business_type_id, bt.name AS business_type_name
-      FROM Location_Type lt
-      JOIN Business_Type bt ON bt.id = lt.business_type_id
+      FROM AUD_LDF_locationType lt
+      JOIN AUD_LDF_businessType bt ON bt.id = lt.business_type_id
       ORDER BY bt.name, lt.name
     `);
     return result.recordset;

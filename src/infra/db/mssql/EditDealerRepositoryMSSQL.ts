@@ -20,7 +20,7 @@ export class DealerRepositoryMSSQL {
                     .input("phone", sql.NVarChar, phone ?? null)
                     .input("designation", sql.NVarChar, designation ?? null)
                     .query(`
-            UPDATE Location_Contact
+            UPDATE AUD_LDF_contacts
             SET 
               Name = COALESCE(@name, Name),
               Email = COALESCE(@email, Email),
@@ -34,7 +34,7 @@ export class DealerRepositoryMSSQL {
             if (stockFile) {
                 const dealerStock = await transaction.request()
                     .input("dealerId", sql.Int, dealerId)
-                    .query("SELECT StockFile FROM Dealer WHERE DealerID = @dealerId");
+                    .query("SELECT StockFile FROM AUD_LDF_dealer WHERE DealerID = @dealerId");
 
                 if (dealerStock.recordset[0]?.StockFile) {
                     // Update Dealer
@@ -42,7 +42,7 @@ export class DealerRepositoryMSSQL {
                         .input("dealerId", sql.Int, dealerId)
                         .input("stockFile", sql.NVarChar, stockFile)
                         .query(`
-              UPDATE Dealer
+              UPDATE AUD_LDF_dealer
               SET StockFile = @stockFile, UpdatedAt = GETDATE()
               WHERE DealerID = @dealerId
             `);
@@ -51,7 +51,7 @@ export class DealerRepositoryMSSQL {
                         .input("locationId", sql.Int, locationId)
                         .input("stockFile", sql.NVarChar, stockFile)
                         .query(`
-              UPDATE Location_Details
+              UPDATE AUD_LDF_locationDetails
               SET Stock_File = @stockFile, UpdatedAt = GETDATE()
               WHERE Id = @locationId
             `);
@@ -62,7 +62,7 @@ export class DealerRepositoryMSSQL {
                 await transaction.request()
                     .input("locationId", sql.Int, locationId)
                     .query(`
-      DELETE FROM LocationMedia
+      DELETE FROM AUD_LDF_locationMediaMapping
       WHERE LocationId = @locationId
     `);
                 for (const media of mediaArray) {
@@ -70,7 +70,7 @@ export class DealerRepositoryMSSQL {
                         .input("locationId", sql.Int, locationId)
                         .input("mediaUrl", sql.NVarChar, media)
                         .query(`
-        INSERT INTO LocationMedia (LocationId, MediaUrl, CreatedAt, UpdatedAt)
+        INSERT INTO AUD_LDF_locationMediaMapping (LocationId, MediaUrl, CreatedAt, UpdatedAt)
         VALUES (@locationId, @mediaUrl, GETDATE(), GETDATE())
       `);
                 }
@@ -99,7 +99,7 @@ export class DealerRepositoryMSSQL {
             .input("spokespersonPhone", sql.NVarChar, data.spokespersonPhone || null)
             .input("spokespersonEmail", sql.NVarChar, data.spokespersonEmail || null)
             .query(`
-                UPDATE Dealer
+                UPDATE AUD_LDF_dealer
                 SET 
                   BrandID = COALESCE(@brandId, BrandID),
                   DealerName = COALESCE(@dealerName, DealerName),
@@ -116,7 +116,7 @@ export class DealerRepositoryMSSQL {
         if (data.stockFile) {
             const dealerStock = await transaction.request()
                 .input("dealerId", sql.Int, data.dealerId)
-                .query("SELECT StockFile FROM Dealer WHERE DealerID = @dealerId");
+                .query("SELECT StockFile FROM AUD_LDF_dealer WHERE DealerID = @dealerId");
 
             if (dealerStock.recordset[0]?.StockFile) {
                 // Update Dealer.StockFile
@@ -124,7 +124,7 @@ export class DealerRepositoryMSSQL {
                     .input("dealerId", sql.Int, data.dealerId)
                     .input("stockFile", sql.NVarChar, data.stockFile)
                     .query(`
-                        UPDATE Dealer
+                        UPDATE AUD_LDF_dealer
                         SET StockFile = @stockFile, UpdatedAt = GETDATE()
                         WHERE DealerID = @dealerId
                     `);
@@ -155,7 +155,7 @@ export class DealerRepositoryMSSQL {
   .input("quantity", sql.Int, data.quantity || null)
   .input("value", sql.Decimal, data.value || null)
   .query(`
-    UPDATE Location_Details
+    UPDATE AUD_LDF_locationDetails
     SET 
       Location_Name = COALESCE(@locationName, Location_Name),
       Pincode = COALESCE(@pincode, Pincode),
@@ -178,13 +178,13 @@ export class DealerRepositoryMSSQL {
     if (data.media && data.media.length > 0) {
       await pool.request()
         .input("locationId", sql.Int, data.locationId)
-        .query(`DELETE FROM LocationMedia WHERE locationId = @locationId`);
+        .query(`DELETE FROM AUD_LDF_locationMediaMapping WHERE locationId = @locationId`);
 
       for (const m of data.media) {
         await pool.request()
           .input("locationId", sql.Int, data.locationId)
           .input("url", sql.NVarChar, m)
-          .query(`INSERT INTO LocationMedia (LocationId, MediaUrl) VALUES (@locationId, @url)`);
+          .query(`INSERT INTO AUD_LDF_locationMediaMapping (LocationId, MediaUrl) VALUES (@locationId, @url)`);
       }
     }
   }
@@ -200,7 +200,7 @@ export class DealerRepositoryMSSQL {
       .input("email", sql.NVarChar, data.email || null)
       .input("designation", sql.NVarChar, data.designation || null)
       .query(`
-        UPDATE Location_Contact
+        UPDATE AUD_LDF_contacts
         SET 
           Name = COALESCE(@name, Name),
           Country_Code=COALESCE(@country_code,Country_Code),

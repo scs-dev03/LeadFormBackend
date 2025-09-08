@@ -4,7 +4,7 @@ export class UserMailSent{
   async markFinalMailSent(userId: number): Promise<void> {
     const pool = await poolPromise;
     const query = `
-      UPDATE users
+      UPDATE AUD_LDF_users
       SET 
       isFinalMailSent = 1,
       updated_at = GETDATE()    

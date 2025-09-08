@@ -24,7 +24,7 @@ export class LocationDetailsRepositoryMSSQL implements ILocationDetailsRepositor
       .input("quantity", sql.Int, location.quantity)
       .input("value", sql.Decimal(18, 2), location.value)
       .query(`
-        INSERT INTO Location_Details (
+        INSERT INTO AUD_LDF_locationDetails (
           Dealer_Id, Location_Name, Location_Type_Id, Audit_Id, Pincode, City, State,
           Stock_File, Remark, Business_Type_Id, PartLine, Quantity, Value
         )
@@ -72,7 +72,7 @@ export class LocationDetailsRepositoryMSSQL implements ILocationDetailsRepositor
                SpokespersonPhone AS spokespersonPhone,
                StockFile AS stockFile,
                CreatedBy
-        FROM dbo.Dealer
+        FROM dbo.AUD_LDF_dealer
         WHERE DealerID = @dealerId
       `);
 
@@ -99,7 +99,7 @@ export class LocationDetailsRepositoryMSSQL implements ILocationDetailsRepositor
       .input("locationName", sql.NVarChar(255), locationName)
       .query(`
         SELECT TOP 1 * 
-        FROM Location_Details 
+        FROM AUD_LDF_locationDetails 
         WHERE Dealer_Id = @dealerId AND Location_Name = @locationName
       `);
 
@@ -134,7 +134,7 @@ export class LocationDetailsRepositoryMSSQL implements ILocationDetailsRepositor
         .input("locationId", sql.Int, locationId)
         .input("mediaUrl", sql.NVarChar(500), url)
         .query(`
-          INSERT INTO LocationMedia (LocationId, MediaUrl)
+          INSERT INTO AUD_LDF_locationMediaMapping (LocationId, MediaUrl)
           OUTPUT INSERTED.*
           VALUES (@locationId, @mediaUrl)
         `);

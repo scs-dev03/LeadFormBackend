@@ -12,7 +12,7 @@ export class GetUserEmailById implements IUserRepository {
     const result = await this.pool
       .request()
       .input("userId", sql.Int, userId)
-      .query("SELECT email FROM users WHERE id = @userId");
+      .query("SELECT email FROM AUD_LDF_users WHERE id = @userId");
 
     if (result.recordset.length === 0) return null;
     return result.recordset[0].email;

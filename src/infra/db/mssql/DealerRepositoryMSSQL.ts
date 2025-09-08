@@ -22,7 +22,7 @@ export class DealerRepositoryMSSQL implements IDealerRepository {
              d.CreatedBy AS createdBy,
              d.CreatedAt AS createdAt,
              d.UpdatedAt AS updatedAt
-      FROM dbo.Dealer d
+      FROM dbo.AUD_LDF_dealer d
       WHERE 1=1
     `;
 
@@ -61,9 +61,9 @@ export class DealerRepositoryMSSQL implements IDealerRepository {
           d.StockFile, d.CreatedBy,
           b.BrandID AS BrandID, b.BrandName AS BrandName,
           bt.Business_Type_ID AS BusinessTypeID, bt.Business_Type_Name AS BusinessTypeName
-        FROM dbo.Dealer d
-        JOIN dbo.UAD_AUD_Brand_Master b ON b.BrandID = d.BrandID
-        JOIN dbo.Business_Type bt ON bt.Business_Type_ID = d.BusinessTypeID
+        FROM dbo.AUD_LDF_dealer d
+        JOIN dbo.AUD_LDF_brandMaster b ON b.BrandID = d.BrandID
+        JOIN dbo.AUD_LDF_businessType bt ON bt.Business_Type_ID = d.BusinessTypeID
         WHERE d.DealerID = @dealerId
       `);
 
@@ -105,7 +105,7 @@ export class DealerRepositoryMSSQL implements IDealerRepository {
                Country_Code AS country_code,
                StockFile AS stockFile,
                CreatedBy AS createdBy
-        FROM dbo.Dealer
+        FROM dbo.AUD_LDF_dealer
         WHERE DealerID = @dealerId
       `);
 
@@ -141,7 +141,7 @@ export class DealerRepositoryMSSQL implements IDealerRepository {
             .input("StockFile", sql.NVarChar, dealerData.stockFile ?? null)
             .input("CreatedBy", sql.Int, dealerData.createdBy)
             .query(`
-        INSERT INTO dbo.Dealer 
+        INSERT INTO dbo.AUD_LDF_dealer
           (BrandID, DealerName, BusinessTypeID, SpokespersonName, SpokespersonEmail, SpokespersonPhone, StockFile, CreatedBy)
         VALUES
           (@BrandID, @DealerName, @BusinessTypeID, @SpokespersonName, @SpokespersonEmail, @SpokespersonPhone, @StockFile, @CreatedBy);
@@ -176,15 +176,15 @@ export class DealerRepositoryMSSQL implements IDealerRepository {
     lc.Designation AS Designation,
     COALESCE(d.StockFile, l.Stock_File) AS stockUpload,
 	lm.MediaUrl as media_Files
-FROM uad_aud_brand_master b
-INNER JOIN dealer d ON d.BrandID = b.BrandID
-INNER JOIN Location_Details l ON d.DealerID = l.Dealer_Id
-INNER JOIN Business_Type bt ON d.BusinessTypeID = bt.id
-INNER JOIN Audit_Categories ac ON l.Audit_Id = ac.id
-left JOIN Location_Contact lc ON l.Id = lc.Dealer_Location_Id
-INNER JOIN UAD_AUD_Segment_Master sg ON  b.SegmentID = sg.SegmentID
-INNER JOIN UAD_AUD_Industry_Type_Master it ON sg.Industry_Type_ID = it.Industry_Type_ID
-left JOIN LocationMedia lm ON l.id =lm.LocationId
+FROM AUD_LDF_brandMaster b
+INNER JOIN AUD_LDF_dealer d ON d.BrandID = b.BrandID
+INNER JOIN AUD_LDF_locationDetails l ON d.DealerID = l.Dealer_Id
+INNER JOIN AUD_LDF_businessType bt ON d.BusinessTypeID = bt.id
+INNER JOIN AUD_LDF_auditCategories ac ON l.Audit_Id = ac.id
+left JOIN AUD_LDF_contacts lc ON l.Id = lc.Dealer_Location_Id
+INNER JOIN AUD_LDF_segmentMaster sg ON  b.SegmentID = sg.SegmentID
+INNER JOIN AUD_LDF_industryMaster it ON sg.Industry_Type_ID = it.Industry_Type_ID
+left JOIN AUD_LDF_locationMediaMapping lm ON l.id =lm.LocationId
 WHERE d.CreatedBy = @UserId
     `);
         return result.recordset;
@@ -229,16 +229,16 @@ WHERE d.CreatedBy = @UserId
             COALESCE(d.StockFile, l.Stock_File) AS StockUpload,
             lm.Id AS MediaId,
             lm.MediaUrl AS MediaFile
-        FROM uad_aud_brand_master b
-        LEFT JOIN dealer d ON d.BrandID = b.BrandID
-        LEFT JOIN Location_Details l ON d.DealerID = l.Dealer_Id
-        LEFT JOIN Business_Type bt ON d.BusinessTypeID = bt.id
-        LEFT JOIN Audit_Categories ac ON l.Audit_Id = ac.id
-        LEFT JOIN Location_Contact lc ON l.Id = lc.Dealer_Location_Id
-        LEFT JOIN UAD_AUD_Segment_Master sg ON b.SegmentID = sg.SegmentID
-        LEFT JOIN UAD_AUD_Industry_Type_Master it ON sg.Industry_Type_ID = it.Industry_Type_ID
-        LEFT JOIN LocationMedia lm ON l.Id = lm.LocationId
-        LEFT JOIN Location_Type lt ON l.Location_Type_Id = lt.id
+        FROM AUD_LDF_brandMaster b
+        LEFT JOIN AUD_LDF_dealer d ON d.BrandID = b.BrandID
+        LEFT JOIN AUD_LDF_locationDetails l ON d.DealerID = l.Dealer_Id
+        LEFT JOIN AUD_LDF_businessType bt ON d.BusinessTypeID = bt.id
+        LEFT JOIN AUD_LDF_auditCategories ac ON l.Audit_Id = ac.id
+        LEFT JOIN AUD_LDF_contacts lc ON l.Id = lc.Dealer_Location_Id
+        LEFT JOIN AUD_LDF_segmentMaster sg ON b.SegmentID = sg.SegmentID
+        LEFT JOIN AUD_LDF_industryMaster it ON sg.Industry_Type_ID = it.Industry_Type_ID
+        LEFT JOIN AUD_LDF_locationMediaMapping lm ON l.Id = lm.LocationId
+        LEFT JOIN AUD_LDF_locationType lt ON l.Location_Type_Id = lt.id
         WHERE b.BrandID = @brandId AND d.CreatedBy = @UserId;
     `;
 
@@ -331,7 +331,7 @@ WHERE d.CreatedBy = @UserId
       .input("userId", sql.Int, userId)
       .query(`
         SELECT DISTINCT BrandId
-        FROM Dealer
+        FROM AUD_LDF_dealer
         WHERE CreatedBy = @userId
       `);
 

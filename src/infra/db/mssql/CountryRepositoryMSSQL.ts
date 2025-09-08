@@ -6,7 +6,7 @@ import { poolPromise } from "./connection";
 export class CountryRepositoryMSSQL implements ICountryRepository {
   async findAll(): Promise<Country[]> {
     const pool = await poolPromise;
-    const result = await pool.request().query("SELECT * FROM Countries");
+    const result = await pool.request().query("SELECT * FROM AUD_LDF_countryCodeMaster");
     return result.recordset.map(
       (row: any) => new Country(row.Country, row.IsoCode, row.CountryCode, row.Id)
     );

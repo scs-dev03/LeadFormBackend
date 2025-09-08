@@ -11,7 +11,7 @@ export class SegmentRepositoryMSSQL implements ISegmentRepository {
       .input("id", sql.Int, id)
       .query(`
         SELECT SegmentID AS id, SegmentName AS name, Industry_Type_ID AS industryId
-        FROM UAD_AUD_Segment_Master 
+        FROM AUD_LDF_segmentMaster 
         WHERE SegmentID = @id
       `);
     return rs.recordset[0] ?? null;
@@ -24,7 +24,7 @@ export class SegmentRepositoryMSSQL implements ISegmentRepository {
       .input("segmentId", sql.Int, segmentId)
       .query(`
         SELECT BrandID AS id, BrandName AS name
-        FROM UAD_AUD_Brand_Master
+        FROM AUD_LDF_brandMaster
         WHERE SegmentID = @segmentId
         ORDER BY BrandName
       `);
@@ -38,8 +38,8 @@ export class SegmentRepositoryMSSQL implements ISegmentRepository {
       .input("segmentId", sql.Int, segmentId)
       .query(`
         SELECT i.Industry_Type_ID AS id, i.Industry_Type_Name AS name
-        FROM UAD_AUD_Segment_Master s
-        JOIN UAD_AUD_Industry_Type_Master i ON i.Industry_Type_ID = s.Industry_Type_ID
+        FROM AUD_LDF_segmentMaster s
+        JOIN AUD_LDF_industryMaster i ON i.Industry_Type_ID = s.Industry_Type_ID
         WHERE s.SegmentID = @segmentId
       `);
     return rs.recordset[0] ?? null;
@@ -51,8 +51,8 @@ export class SegmentRepositoryMSSQL implements ISegmentRepository {
 
     let query = `
       SELECT DISTINCT s.SegmentID AS id, s.SegmentName AS name
-      FROM UAD_AUD_Segment_Master s
-      LEFT JOIN UAD_AUD_Brand_Master b ON b.SegmentID = s.SegmentID
+      FROM AUD_LDF_segmentMaster s
+      LEFT JOIN AUD_LDF_brandMaster b ON b.SegmentID = s.SegmentID
       WHERE 1=1
     `;
 

@@ -10,9 +10,9 @@ export class IndustryRepositoryMSSQL implements IIndustryRepository {
 
     let query = `
       SELECT DISTINCT i.Industry_Type_ID AS id, i.Industry_Type_Name AS name
-      FROM UAD_AUD_Industry_Type_Master i
-      LEFT JOIN UAD_AUD_Segment_Master s ON s.Industry_Type_ID = i.Industry_Type_ID
-      LEFT JOIN UAD_AUD_Brand_Master b ON b.SegmentID = s.SegmentID
+      FROM AUD_LDF_industryMaster i
+      LEFT JOIN AUD_LDF_segmentMaster s ON s.Industry_Type_ID = i.Industry_Type_ID
+      LEFT JOIN AUD_LDF_brandMaster b ON b.SegmentID = s.SegmentID
       WHERE 1=1
     `;
 
@@ -36,8 +36,8 @@ export class IndustryRepositoryMSSQL implements IIndustryRepository {
 
     let query = `
       SELECT DISTINCT s.SegmentID AS id, s.SegmentName AS name
-      FROM UAD_AUD_Segment_Master s
-      LEFT JOIN UAD_AUD_Brand_Master b ON b.SegmentID = s.SegmentID
+      FROM AUD_LDF_segmentMaster s
+      LEFT JOIN AUD_LDF_brandMaster b ON b.SegmentID = s.SegmentID
       WHERE 1=1
     `;
 
@@ -61,9 +61,9 @@ export class IndustryRepositoryMSSQL implements IIndustryRepository {
 
     let query = `
       SELECT DISTINCT b.BrandID AS id, b.BrandName AS name
-      FROM UAD_AUD_Brand_Master b
-      LEFT JOIN UAD_AUD_Segment_Master s ON b.SegmentID = s.SegmentID
-      LEFT JOIN UAD_AUD_Industry_Type_Master i ON s.Industry_Type_ID = i.Industry_Type_ID
+      FROM AUD_LDF_brandMaster b
+      LEFT JOIN AUD_LDF_segmentMaster s ON b.SegmentID = s.SegmentID
+      LEFT JOIN AUD_LDF_industryMaster i ON s.Industry_Type_ID = i.Industry_Type_ID
       WHERE 1=1
     `;
 
