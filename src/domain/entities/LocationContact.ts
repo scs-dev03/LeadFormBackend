@@ -4,7 +4,7 @@ export class LocationContact {
     public location: number,
     public designation: string,
     public name: string,
-    public Country_code: string | null,
+    public Country_Code: string,
     public phone: string | null,
     public email: string | null,
     public createdAt: Date | null,

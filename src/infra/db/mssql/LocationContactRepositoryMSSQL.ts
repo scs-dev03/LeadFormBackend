@@ -35,7 +35,7 @@ export class LocationContactRepositoryMSSQL implements ILocationContactRepositor
         .input("dealerLocationId", sql.Int, contact.location)
         .input("designation", sql.NVarChar(100), contact.designation)
         .input("name", sql.NVarChar(200), contact.name)
-        .input("country_code", sql.NVarChar(10), contact.Country_code)
+        .input("country_code", sql.NVarChar(10), contact.Country_Code)
         .input("phone", sql.NVarChar(50), contact.phone)
         .input("email", sql.NVarChar(200), contact.email)
         .query(`

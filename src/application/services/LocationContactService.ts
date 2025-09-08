@@ -19,7 +19,7 @@ export class LocationContactService {
         c.location,
         c.designation,
         c.name,
-        c.Country_code,
+        c.Country_Code,
         c.phone || null,
         c.email || null,
         null,

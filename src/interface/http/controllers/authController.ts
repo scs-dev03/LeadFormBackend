@@ -5,10 +5,10 @@ const userRepo = new UserRepositoryMSSQL();
 
 // Signup: create a new user
 export const signup = async (req: Request, res: Response) => {
-  const { name, phone } = req.body;
+  const { name, phone, email,country_code } = req.body;
 
-  if (!name || !phone) {
-    return res.status(400).json({ message: "Name and phone are required" });
+  if (!name || !phone || !email || !country_code) {
+    return res.status(400).json({ message: "Name, email, country_code and phone are required" });
   }
 
   try {
@@ -17,7 +17,7 @@ export const signup = async (req: Request, res: Response) => {
       return res.status(409).json({ message: "User already exists" });
     }
 
-    const newUser = await userRepo.createUser(name, phone);
+    const newUser = await userRepo.createUser(name, phone, email,country_code);
     return res.status(201).json({ message: "User created successfully", user: newUser });
   } catch (err) {
     // console.error("Error in signup:", err);
@@ -27,10 +27,10 @@ export const signup = async (req: Request, res: Response) => {
 
 // Signin: only existing user can sign in
 export const signin = async (req: Request, res: Response) => {
-  const { phone } = req.body;
+  const { country_code,phone } = req.body;
 
-  if (!phone) {
-    return res.status(400).json({ message: "Phone is required" });
+  if (!phone || !country_code) {
+    return res.status(400).json({ message: "Phone is required with country_code" });
   }
 
   try {
@@ -48,14 +48,14 @@ export const signin = async (req: Request, res: Response) => {
 
 // Update user
 export const updateUser = async (req: Request, res: Response) => {
-  const { phone, name } = req.body;
+  const { country_code,phone, name, email } = req.body;
 
-  if (!phone || !name) {
+  if (!phone || !name || !country_code ) {
     return res.status(400).json({ message: "Phone and name are required" });
   }
 
   try {
-    const updatedUser = await userRepo.updateUser(phone, name);
+    const updatedUser = await userRepo.updateUser(phone, name, email, country_code);
     if (!updatedUser) {
       return res.status(404).json({ message: "User not found" });
     }

@@ -95,7 +95,7 @@ export class DealerRepositoryMSSQL {
             .input("dealerName", sql.NVarChar, data.dealerName || null)
             .input("businessTypeID", sql.Int, data.businessTypeID || null)
             .input("spokespersonName", sql.NVarChar, data.spokespersonName || null)
-            .input("country_code", sql.NVarChar, data.country_code || null)
+            .input("country_code", sql.NVarChar, data.country_code)
             .input("spokespersonPhone", sql.NVarChar, data.spokespersonPhone || null)
             .input("spokespersonEmail", sql.NVarChar, data.spokespersonEmail || null)
             .query(`

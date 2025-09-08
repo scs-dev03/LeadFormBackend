@@ -51,7 +51,7 @@ export class DealerController {
   }
 static async editDealer(req: Request, res: Response) {
     try {
-        // console.log("FormData body:", req.body);
+        console.log("FormData body:", req.body);
         // console.log("Uploaded file:", req.file);
 
         const file = req.file as S3File | undefined;
@@ -63,6 +63,7 @@ static async editDealer(req: Request, res: Response) {
             dealerName: req.body.dealerName,
             businessTypeID: req.body.businessTypeID ? Number(req.body.businessTypeID) : undefined,
             spokespersonName: req.body.spokespersonName,
+            country_code: req.body.country_code,
             spokespersonPhone: req.body.spokespersonPhone,
             spokespersonEmail: req.body.spokespersonEmail,
             stockFile: file ? bucketUrl + file.key : undefined,
@@ -112,10 +113,11 @@ static async editDealer(req: Request, res: Response) {
   // 3. Location contact edit
   static async editLocationContact(req: Request, res: Response) {
     try {
-      //console.log("FormData body:", req.body);
+      console.log("FormData body:", req.body);
       await dealerService.editContact({
         locationId: Number(req.body.locationId),
         name: req.body.name,
+        country_code: req.body.country_code,
         phone: req.body.phone,
         email: req.body.email,
         designation: req.body.designation
@@ -131,7 +133,7 @@ static async editDealer(req: Request, res: Response) {
   static async bulkEditLocationContacts(req: Request, res: Response) {
   try {
     await dealerService.bulkEditContacts(req.body.contacts);
-
+    console.log("Bulk contacts updated:", req.body);
     res.json({ message: "Bulk location contacts updated successfully" });
   } catch (err: any) {
     //console.error(err);
