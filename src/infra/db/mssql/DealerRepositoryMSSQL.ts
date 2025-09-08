@@ -1,6 +1,7 @@
 import { IDealerRepository } from "../../../domain/repositories/IDealerRepository";
 import { Dealer } from "../../../domain/entities/Dealer";
 import { poolPromise, sql } from "../mssql/connection";
+import { count } from "console";
 
 export class DealerRepositoryMSSQL implements IDealerRepository {
 
@@ -15,6 +16,7 @@ export class DealerRepositoryMSSQL implements IDealerRepository {
              d.BusinessTypeID AS businessTypeId,
              d.SpokespersonName AS spokespersonName,
              d.SpokespersonEmail AS spokespersonEmail,
+             d.Country_Code AS country_code,
              d.SpokespersonPhone AS spokespersonPhone,
              d.StockFile AS stockFile,
              d.CreatedBy AS createdBy,
@@ -55,7 +57,7 @@ export class DealerRepositoryMSSQL implements IDealerRepository {
             .query(`
         SELECT 
           d.DealerID, d.DealerName, d.BrandID, d.BusinessTypeID,
-          d.SpokespersonName, d.SpokespersonEmail, d.SpokespersonPhone,
+          d.SpokespersonName, d.SpokespersonEmail, d.SpokespersonPhone,d.Country_Code,
           d.StockFile, d.CreatedBy,
           b.BrandID AS BrandID, b.BrandName AS BrandName,
           bt.Business_Type_ID AS BusinessTypeID, bt.Business_Type_Name AS BusinessTypeName
@@ -76,6 +78,7 @@ export class DealerRepositoryMSSQL implements IDealerRepository {
                 businessTypeId: row.BusinessTypeID,
                 spokespersonName: row.SpokespersonName,
                 spokespersonEmail: row.SpokespersonEmail,
+                Country_Code: row.Country_Code,
                 spokespersonPhone: row.SpokespersonPhone,
                 stockFile: row.StockFile,
                 createdBy: row.CreatedBy
@@ -99,6 +102,7 @@ export class DealerRepositoryMSSQL implements IDealerRepository {
                SpokespersonName AS spokespersonName,
                SpokespersonEmail AS spokespersonEmail,
                SpokespersonPhone AS spokespersonPhone,
+               Country_Code AS country_code,
                StockFile AS stockFile,
                CreatedBy AS createdBy
         FROM dbo.Dealer
@@ -115,6 +119,7 @@ export class DealerRepositoryMSSQL implements IDealerRepository {
             businessTypeId: row.businessTypeId,
             spokespersonName: row.spokespersonName,
             spokespersonEmail: row.spokespersonEmail,
+            Country_Code: row.country_code,
             spokespersonPhone: row.spokespersonPhone,
             stockFile: row.stockFile,
             createdBy: row.createdBy
@@ -132,6 +137,7 @@ export class DealerRepositoryMSSQL implements IDealerRepository {
             .input("SpokespersonName", sql.NVarChar, dealerData.spokespersonName)
             .input("SpokespersonEmail", sql.NVarChar, dealerData.spokespersonEmail)
             .input("SpokespersonPhone", sql.NVarChar, dealerData.spokespersonPhone)
+            .input("Country_Code", sql.NVarChar, dealerData.Country_Code)
             .input("StockFile", sql.NVarChar, dealerData.stockFile ?? null)
             .input("CreatedBy", sql.Int, dealerData.createdBy)
             .query(`
@@ -164,6 +170,7 @@ export class DealerRepositoryMSSQL implements IDealerRepository {
     l.City,
     l.State,
     lc.Name Name,
+    lc.Country_Code AS Country_Code,
     lc.Phone AS Phone,
     lc.Email AS Email,
     lc.Designation AS Designation,
@@ -203,6 +210,7 @@ WHERE d.CreatedBy = @UserId
             lt.id AS LocationTypeId,
             lt.name AS LocationTypeName,
             d.SpokespersonName,
+            d.Country_Code,
             d.SpokespersonPhone,
             d.SpokespersonEmail,
             l.Pincode AS PinCode,
@@ -214,6 +222,7 @@ WHERE d.CreatedBy = @UserId
             l.value,
             lc.Id AS ContactId,
             lc.Name AS ContactName,
+            lc.Country_Code AS ContactCountryCode,
             lc.Phone AS ContactPhone,
             lc.Email AS ContactEmail,
             lc.Designation AS ContactDesignation,
@@ -253,6 +262,7 @@ WHERE d.CreatedBy = @UserId
             businessType: { id: first.BusinessTypeId, name: first.BusinessTypeName },
             spokesperson: {
                 name: first.SpokespersonName,
+                country_code:first.Country_Code,
                 phone: first.SpokespersonPhone,
                 email: first.SpokespersonEmail
             },
@@ -295,6 +305,7 @@ WHERE d.CreatedBy = @UserId
                     locationId: row.LocationId,
                     locationName: row.LocationName,
                     name: row.ContactName,
+                    country_code: row.ContactCountryCode,
                     phone: row.ContactPhone,
                     email: row.ContactEmail,
                     designation: row.ContactDesignation

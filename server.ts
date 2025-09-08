@@ -14,13 +14,13 @@ app.use("/api", routes);
 (async () => {
   try {
     await poolPromise;
-    // console.log("DB connected!");
+    console.log("DB connected!");
   } catch (err) {
-    // console.error("DB connection failed:", err);
+    console.error("DB connection failed:", err);
   }
 })();
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  //console.log(`Server running on port ${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });

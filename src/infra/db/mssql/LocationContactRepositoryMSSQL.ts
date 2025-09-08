@@ -18,6 +18,7 @@ export class LocationContactRepositoryMSSQL implements ILocationContactRepositor
       row.Dealer_Location_Id,
       row.Designation,
       row.Name,
+      row.Country_Code,
       row.Phone,
       row.Email,
       row.CreatedAt,
@@ -34,12 +35,13 @@ export class LocationContactRepositoryMSSQL implements ILocationContactRepositor
         .input("dealerLocationId", sql.Int, contact.location)
         .input("designation", sql.NVarChar(100), contact.designation)
         .input("name", sql.NVarChar(200), contact.name)
+        .input("country_code", sql.NVarChar(10), contact.Country_code)
         .input("phone", sql.NVarChar(50), contact.phone)
         .input("email", sql.NVarChar(200), contact.email)
         .query(`
-          INSERT INTO Location_Contact (Dealer_Location_Id, Designation, Name, Phone, Email)
+          INSERT INTO Location_Contact (Dealer_Location_Id, Designation, Name,Country_Code,Phone, Email)
           OUTPUT INSERTED.*
-          VALUES (@dealerLocationId, @designation, @name, @phone, @email)
+          VALUES (@dealerLocationId, @designation, @name,@Country_Code,@phone, @email)
         `);
 
       const row = rs.recordset[0];
@@ -48,6 +50,7 @@ export class LocationContactRepositoryMSSQL implements ILocationContactRepositor
         row.Dealer_Location_Id,
         row.Designation,
         row.Name,
+        row.Country_Code,
         row.Phone,
         row.Email,
         row.CreatedAt,

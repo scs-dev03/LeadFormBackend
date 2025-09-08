@@ -16,6 +16,7 @@ export class DealerRepositoryMSSQL {
                     .input("locationId", sql.Int, locationId)
                     .input("name", sql.NVarChar, name ?? null)
                     .input("email", sql.NVarChar, email ?? null)
+                    .input("country_code", sql.NVarChar, data.country_code ?? null)
                     .input("phone", sql.NVarChar, phone ?? null)
                     .input("designation", sql.NVarChar, designation ?? null)
                     .query(`
@@ -23,6 +24,7 @@ export class DealerRepositoryMSSQL {
             SET 
               Name = COALESCE(@name, Name),
               Email = COALESCE(@email, Email),
+              Country_Code=COALESCE(@country_code,Country_Code),
               Phone = COALESCE(@phone, Phone),
               Designation = COALESCE(@designation, Designation),
               UpdatedAt = GETDATE()
@@ -93,6 +95,7 @@ export class DealerRepositoryMSSQL {
             .input("dealerName", sql.NVarChar, data.dealerName || null)
             .input("businessTypeID", sql.Int, data.businessTypeID || null)
             .input("spokespersonName", sql.NVarChar, data.spokespersonName || null)
+            .input("country_code", sql.NVarChar, data.country_code || null)
             .input("spokespersonPhone", sql.NVarChar, data.spokespersonPhone || null)
             .input("spokespersonEmail", sql.NVarChar, data.spokespersonEmail || null)
             .query(`
@@ -102,6 +105,7 @@ export class DealerRepositoryMSSQL {
                   DealerName = COALESCE(@dealerName, DealerName),
                   BusinessTypeID = COALESCE(@businessTypeID, BusinessTypeID),
                   SpokespersonName = COALESCE(@spokespersonName, SpokespersonName),
+                  Country_Code=COALESCE(@country_code,Country_Code),
                   SpokespersonPhone = COALESCE(@spokespersonPhone, SpokespersonPhone),
                   SpokespersonEmail = COALESCE(@spokespersonEmail, SpokespersonEmail),
                   UpdatedAt = GETDATE()
@@ -191,6 +195,7 @@ export class DealerRepositoryMSSQL {
     await pool.request()
       .input("locationId", sql.Int, data.locationId)
       .input("name", sql.NVarChar, data.name || null)
+      .input("country_code", sql.NVarChar, data.country_code || null)
       .input("phone", sql.NVarChar, data.phone || null)
       .input("email", sql.NVarChar, data.email || null)
       .input("designation", sql.NVarChar, data.designation || null)
@@ -198,6 +203,7 @@ export class DealerRepositoryMSSQL {
         UPDATE Location_Contact
         SET 
           Name = COALESCE(@name, Name),
+          Country_Code=COALESCE(@country_code,Country_Code),
           Phone = COALESCE(@phone, Phone),
           Email = COALESCE(@email, Email),
           Designation = COALESCE(@designation, Designation),

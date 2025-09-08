@@ -3,6 +3,7 @@ export interface EditDealerDetailsDTO {
   locationId: number;
   name?: string;
   email?: string;
+  country_code?:string;
   phone?: string;
   designation?: string;
   mediaUrl?: string;
