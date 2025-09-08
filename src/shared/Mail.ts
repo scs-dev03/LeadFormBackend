@@ -3,7 +3,7 @@ interface MailOptions {
   cc?: string;
   subject: string;
   html: string;
-  attachment: { filename: string; buffer: Buffer };
+ attachments: { filename: string; buffer: Buffer }[];
 }
 
 type MailType = "user" | "admin";
@@ -12,8 +12,7 @@ export class MailOptionsBuilder {
   static buildMailOptions(
     type: MailType,
     to: string,
-    filename: string,
-    buffer: Buffer,
+    attachments: { filename: string; buffer: Buffer }[],
     cc?: string
   ): MailOptions {
     if (type === "user") {
@@ -30,7 +29,8 @@ export class MailOptionsBuilder {
           <br/>
           <p>Thanks and Regards,<br/><strong>Team Spare Care</strong></p>
         `,
-        attachment: { filename, buffer },
+        attachments: attachments, 
+
       };
     }
 
@@ -44,7 +44,8 @@ export class MailOptionsBuilder {
           <br/>
           <p>Regards,<br/><strong>System</strong></p>
         `,
-        attachment: { filename, buffer },
+       attachments: attachments, 
+
       };
     }
 

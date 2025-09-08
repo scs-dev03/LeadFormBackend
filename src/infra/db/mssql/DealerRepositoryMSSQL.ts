@@ -323,4 +323,18 @@ WHERE d.CreatedBy = @UserId
             contacts
         };
     }
+
+    async getBrandIdsByUserId(userId: number): Promise<number[]> {
+    const pool = await poolPromise;
+    const result = await pool
+      .request()
+      .input("userId", sql.Int, userId)
+      .query(`
+        SELECT DISTINCT BrandId
+        FROM Dealer
+        WHERE CreatedBy = @userId
+      `);
+
+    return result.recordset.map((row: any) => row.BrandId);
+  }
 }

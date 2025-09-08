@@ -1,14 +1,14 @@
 import { IMailService } from "../../domain/repositories/IMailService";
 
 export class SendOnboardingMail {
-    constructor(private mail: IMailService) { }
+    constructor(private mail: IMailService) {}
 
     async execute(params: {
         to: string;
         cc?: string;
         subject: string;
         html: string;
-        attachment: { filename: string; buffer: Buffer };
+        attachments: { filename: string; buffer: Buffer }[]; // plural
     }) {
         try {
             await this.mail.send({
@@ -16,13 +16,12 @@ export class SendOnboardingMail {
                 cc: params.cc,
                 subject: params.subject,
                 html: params.html,
-                attachments: [
-                    { filename: params.attachment.filename, content: params.attachment.buffer }
-                ]
+                attachments: params.attachments.map(att => ({
+                    filename: att.filename,
+                    content: att.buffer // Nodemailer expects `content`
+                }))
             });
-            // console.log("Onboarding email sent successfully");
         } catch (err) {
-            // console.log(err);
             throw err;
         }
     }
