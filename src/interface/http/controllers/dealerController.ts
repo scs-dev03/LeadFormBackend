@@ -69,7 +69,7 @@ export class DealerController {
     }
    static async viewDealerByBrand(req: Request, res: Response) {
     try {
-        const { brandId, userId } = req.body;
+        const { brandId,dealerId, userId } = req.body;
 
         if (!brandId) {
             return res.status(400).json({ error: "brandId is required in body" });
@@ -78,7 +78,7 @@ export class DealerController {
             return res.status(400).json({ error: "userId is required in body" });
         }
 
-        const dealerView = await dealerRepo.getDealerByBrand(Number(brandId), Number(userId));
+        const dealerView = await dealerRepo.getDealerByBrand(Number(brandId),Number(dealerId), Number(userId));
         if (!dealerView || dealerView.length === 0) {
             return res.status(404).json({ error: "No dealer found for this brand and user" });
         }

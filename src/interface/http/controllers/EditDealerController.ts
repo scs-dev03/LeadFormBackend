@@ -130,13 +130,22 @@ static async editDealer(req: Request, res: Response) {
     }
   }
 
-  static async bulkEditLocationContacts(req: Request, res: Response) {
+ static async bulkEditLocationContacts(req: Request, res: Response) {
   try {
-    await dealerService.bulkEditContacts(req.body.contacts);
-    console.log("Bulk contacts updated:", req.body);
+    // Map incoming payload to the expected format
+    const contacts = (req.body as any[]).map(contact => ({
+      locationId: contact.location,
+      name: contact.name,
+      phone: contact.phone,
+      country_code: contact.countrycode,
+      email: contact.email,
+      designation: contact.designation
+    }));
+
+    await dealerService.bulkEditContacts(contacts);
+    console.log("Bulk contacts updated:", contacts);
     res.json({ message: "Bulk location contacts updated successfully" });
   } catch (err: any) {
-    //console.error(err);
     res.status(500).json({ error: "Failed to bulk update contact details" });
   }
 }

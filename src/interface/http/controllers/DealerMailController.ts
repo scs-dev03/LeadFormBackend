@@ -29,14 +29,15 @@ export class DealerMailController {
     static async sendOnboardingMail(req: Request, res: Response) {
         const pool = await poolPromise;
         try {
-            const { userId } = req.body;
+            const { userId,dealerId } = req.body;
 
             if (!userId) {
                 return res.status(400).json({ error: "userId and brandId are required" });
             }
-            const brandIdArray = await repo.getBrandIdsByUserId(Number(userId));
-            if (brandIdArray.length === 0) {
-                return res.status(404).json({ error: "No brands found for the user" });
+            const mappingTable = await repo.getBrandIdsByUserId(Number(userId));
+            const dealerIdArray = await repo.getDealerIdsByUserId(Number(userId));
+            if (mappingTable.length === 0 || dealerIdArray.length===0) {
+                return res.status(404).json({ error: "No brands OR dealer found for the user" });
             }
             const userRepo = new GetUserEmailById(pool);
             const to = await userRepo.getEmailById(Number(userId));
@@ -50,12 +51,16 @@ export class DealerMailController {
             const ip: any = getClientIp(req);
             // console.log("Request IP:", ip);
             const attachments: { filename: string; buffer: Buffer }[] = [];//array of objects with filename and content(buffer)
-            for (const brandId of brandIdArray) {
-                const { filename, buffer } = await buildPdf.execute({
+            for (const obj of mappingTable) {
+                const result = await buildPdf.execute({
                     userId: Number(userId),
-                    brandId: Number(brandId),
+                    dealerId:Number(obj.dealerId),
+                    brandId: Number(obj.brandId),
                     ip: ip,
                 });
+                if(result===null)continue
+                const { filename, buffer }=result
+                console.log("Generated PDF:", filename);
                 const uploadsDir = path.join(__dirname, "../../uploads");
                 if (!fs.existsSync(uploadsDir)) {
                     fs.mkdirSync(uploadsDir, { recursive: true });

@@ -19,5 +19,5 @@ export interface IDealerRepository {
   create(dealerData: Omit<Dealer, "id" | "createdAt" | "updatedAt">): Promise<{ id: number }>;
   getDealersByUser(userId: number): Promise<Dealer[]>;
   // getDealerByBrand(brandId: number, userId: number): Promise<Dealer | null>;
-  getDealerByBrand(brandId: number, userId: number): Promise<DealerApiResponse | null>;
+  getDealerByBrand(brandId: number, dealerId:number,userId: number): Promise<DealerApiResponse | null>;
 }

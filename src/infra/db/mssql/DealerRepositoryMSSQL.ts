@@ -159,6 +159,7 @@ export class DealerRepositoryMSSQL implements IDealerRepository {
       SELECT 
     d.DealerID AS dealerId,
 	l.Id AS Location_id,
+    b.BrandID AS brandId,
     b.BrandName AS brand,
 	it.Industry_Type_ID AS Industry,
 	sg.SegmentID AS Segment,
@@ -169,6 +170,7 @@ export class DealerRepositoryMSSQL implements IDealerRepository {
     l.Pincode AS pinCode,
     l.City,
     l.State,
+    l.Remark AS locationRemark,
     lc.Name Name,
     lc.Country_Code AS Country_Code,
     lc.Phone AS Phone,
@@ -187,10 +189,26 @@ INNER JOIN AUD_LDF_industryMaster it ON sg.Industry_Type_ID = it.Industry_Type_I
 left JOIN AUD_LDF_locationMediaMapping lm ON l.id =lm.LocationId
 WHERE d.CreatedBy = @UserId
     `);
-        return result.recordset;
+    // Group by Location_id
+    const grouped: Record<number, any> = {};
+
+    result.recordset.forEach(row => {
+        if (!grouped[row.Location_id]) {
+            grouped[row.Location_id] = {
+                ...row,
+                media_Files: row.media_Files ? [row.media_Files] : []
+            };
+        } else {
+            if (row.media_Files) {
+                grouped[row.Location_id].media_Files.push(row.media_Files);
+            }
+        }
+    });
+     return Object.values(grouped);
     }
-    async getDealerByBrand(brandId: number, userId: number): Promise<any> {
+    async getDealerByBrand(brandId: number,dealerId:number, userId: number): Promise<any> {
         const pool = await poolPromise;
+        // console.log("Fetching dealer for brandId:", brandId, "and userId:", userId);
         const query = `
         SELECT 
             it.Industry_Type_ID AS IndustryId,
@@ -226,7 +244,8 @@ WHERE d.CreatedBy = @UserId
             lc.Phone AS ContactPhone,
             lc.Email AS ContactEmail,
             lc.Designation AS ContactDesignation,
-            COALESCE(d.StockFile, l.Stock_File) AS StockUpload,
+            d.StockFile as dealerStockFile,
+            l.Stock_File as locationStockFile,
             lm.Id AS MediaId,
             lm.MediaUrl AS MediaFile
         FROM AUD_LDF_brandMaster b
@@ -239,19 +258,20 @@ WHERE d.CreatedBy = @UserId
         LEFT JOIN AUD_LDF_industryMaster it ON sg.Industry_Type_ID = it.Industry_Type_ID
         LEFT JOIN AUD_LDF_locationMediaMapping lm ON l.Id = lm.LocationId
         LEFT JOIN AUD_LDF_locationType lt ON l.Location_Type_Id = lt.id
-        WHERE b.BrandID = @brandId AND d.CreatedBy = @UserId;
+        WHERE  d.DealerID=@dealerId AND b.BrandID = @brandId AND d.CreatedBy = @UserId;
     `;
-
         const result = await pool.request()
             .input("brandId", sql.Int, brandId)
+            .input("dealerId", sql.Int, dealerId) // Assuming dealerId is same as brandId for this query
             .input("UserId", sql.Int, userId)
             .query(query);
-
+        // console.log(result);
         const rows = result.recordset;
         if (!rows.length) return null;
 
         const first = rows[0];
-
+        console.log(first);
+        // console.log( first.dealerStockFile);
         // Dealer-level info
         const dealerDetails = {
             dealerId: first.DealerId,
@@ -266,7 +286,7 @@ WHERE d.CreatedBy = @UserId
                 phone: first.SpokespersonPhone,
                 email: first.SpokespersonEmail
             },
-            stock: first.StockUpload
+            stock: first.dealerStockFile
         };
 
         // Group by location
@@ -284,7 +304,7 @@ WHERE d.CreatedBy = @UserId
                     city: row.City,
                     state: row.State,
                     remark: row.LocationRemark,
-                    stock: row.StockUpload,
+                    stock: row.locationStockFile,
                     partline: row.partline,
                     quantity: row.quantity,
                     value: row.value,
@@ -324,17 +344,30 @@ WHERE d.CreatedBy = @UserId
         };
     }
 
-    async getBrandIdsByUserId(userId: number): Promise<number[]> {
+    async getBrandIdsByUserId(userId: number): Promise<{ dealerId: number; brandId: number }[]> {
     const pool = await poolPromise;
     const result = await pool
       .request()
       .input("userId", sql.Int, userId)
       .query(`
-        SELECT DISTINCT BrandId
-        FROM AUD_LDF_dealer
-        WHERE CreatedBy = @userId
+        select dealerid , brandid from aud_ldf_dealer where createdby = @userId
       `);
 
-    return result.recordset.map((row: any) => row.BrandId);
+    return result.recordset.map((row: any) => ({
+    dealerId: row.dealerid,   
+    brandId: row.brandid,
+  }));
+  }
+   async getDealerIdsByUserId(userId: number): Promise<number[]> {
+    const pool = await poolPromise;
+    const result = await pool
+      .request()
+      .input("userId", sql.Int, userId)
+      .query(`
+        select distinct DealerID from AUD_LDF_dealer where CreatedBy= @userId
+      `);
+    //   console.log(result.recordset);
+     
+    return result.recordset;
   }
 }
