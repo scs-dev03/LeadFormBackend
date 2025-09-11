@@ -29,14 +29,14 @@ export class DealerMailController {
     static async sendOnboardingMail(req: Request, res: Response) {
         const pool = await poolPromise;
         try {
-            const { userId,dealerId } = req.body;
+            const { userId} = req.body;
 
             if (!userId) {
                 return res.status(400).json({ error: "userId and brandId are required" });
             }
             const mappingTable = await repo.getBrandIdsByUserId(Number(userId));
-            const dealerIdArray = await repo.getDealerIdsByUserId(Number(userId));
-            if (mappingTable.length === 0 || dealerIdArray.length===0) {
+            // const dealerIdArray = await repo.getDealerIdsByUserId(Number(userId));
+            if (mappingTable.length === 0) {
                 return res.status(404).json({ error: "No brands OR dealer found for the user" });
             }
             const userRepo = new GetUserEmailById(pool);

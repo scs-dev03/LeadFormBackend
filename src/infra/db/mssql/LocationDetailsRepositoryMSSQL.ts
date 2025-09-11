@@ -8,12 +8,34 @@ export class LocationDetailsRepositoryMSSQL implements ILocationDetailsRepositor
 
   async save(location: LocationDetails): Promise<LocationDetails> {
     const pool = await poolPromise;
+    let auditIds: string;
+
+// Check if auditId is a string like "[1,2,3]"
+if (typeof location.auditId === "string") {
+  try {
+    // Try parsing it as JSON array
+    const parsed = JSON.parse(location.auditId);
+    if (Array.isArray(parsed)) {
+      auditIds = parsed.join(","); // "1,2,3"
+    } else {
+      auditIds = String(parsed);   // fallback for single value
+    }
+  } catch {
+    // If not JSON, remove brackets if any
+   auditIds = (location.auditId as any).replace(/\[|\]/g, "");
+  }
+} else if (Array.isArray(location.auditId)) {
+  auditIds = location.auditId.join(",");
+} else {
+  auditIds = String(location.auditId);
+}
 
     const result = await pool.request()
       .input("dealerId", sql.Int, location.dealerId)
       .input("locationName", sql.NVarChar(255), location.locationName)
       .input("locationTypeId", sql.Int, location.locationTypeId)
-      .input("auditId", sql.Int, location.auditId)
+      //.input("auditId", sql.Int, location.auditId)
+      .input("auditId", sql.NVarChar(sql.MAX), auditIds) 
       .input("pincode", sql.NVarChar(20), location.pincode)
       .input("city", sql.NVarChar(100), location.city)
       .input("state", sql.NVarChar(100), location.state)

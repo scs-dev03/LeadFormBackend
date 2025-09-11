@@ -86,7 +86,7 @@ export class DealerController {
         res.status(200).json(dealerView);
     } catch (err: any) {
         //console.error(err);
-        res.status(500).json({ error: "Failed to fetch dealer view" });
+        res.status(500).json(err);
     }
 }
 }

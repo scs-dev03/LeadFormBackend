@@ -1,6 +1,7 @@
 export interface EditDealerDetailsDTO {
   dealerId: number;
   locationId: number;
+  businessTypeID?: number;
   name?: string;
   email?: string;
   country_code?:string;

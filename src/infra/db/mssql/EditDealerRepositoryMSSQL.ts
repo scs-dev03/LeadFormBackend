@@ -89,6 +89,7 @@ export class DealerRepositoryMSSQL {
 
     try {
         // Update dealer fields
+        console.log("Editing dealer with data:", data);
         await transaction.request()
             .input("dealerId", sql.Int, data.dealerId)
             .input("brandId", sql.Int, data.brandId || null)
@@ -139,6 +140,7 @@ export class DealerRepositoryMSSQL {
   // 2. Location-level edit
   async editLocationDetails(data: any): Promise<void> {
     const pool = await poolPromise;
+    console.log("Editing location with data:", data);
     await pool.request()
   .input("locationId", sql.Int, data.locationId)
   .input("locationName", sql.NVarChar, data.locationName || null)
@@ -150,7 +152,8 @@ export class DealerRepositoryMSSQL {
   .input("remark", sql.NVarChar, data.remark || null)
   .input("locationTypeId", sql.Int, data.locationTypeId || null)
   .input("businessTypeId", sql.Int, data.businessTypeId || null)
-  .input("auditId", sql.Int, data.auditId || null)
+  //.input("auditId", sql.Int, data.auditId || null)
+  .input("auditId", sql.NVarChar(sql.MAX), Array.isArray(data.auditId) ? data.auditId.join(',') : data.auditId || null)
   .input("partLine", sql.NVarChar, data.partline || null)
   .input("quantity", sql.Int, data.quantity || null)
   .input("value", sql.Decimal, data.value || null)

@@ -23,6 +23,7 @@ export class LocationDetailsController {
     ]),
     async (req: Request, res: Response) => {
       try {
+        console.log("FormData body:", req.body);
         const files = req.files as { [fieldname: string]: Express.Multer.File[] };
 
         // Store stockFile URL

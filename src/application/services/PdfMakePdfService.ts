@@ -61,7 +61,7 @@ export class PdfMakePdfService implements IPdfService {
                 text: loc.locationName || "—",
                 bold: true,
                 alignment: "center",
-                fillcolor: '#e0e0e0'
+                fillColor: '#e0e0e0'
             }));
 
             const maxRows = Math.max(...group.map((loc) => loc.mediaFiles?.length ?? 0));
@@ -251,6 +251,42 @@ export class PdfMakePdfService implements IPdfService {
                         ],
                     },
                 },
+                {
+                    text: "Stock Details",
+                    style: "subheader",
+                    bold: true,
+                    fontSize: 15,
+                },
+                {
+                    layout: {
+                        hLineWidth: function () { return 0.5; },
+                        vLineWidth: function () { return 0.5; },
+                        hLineColor: function () { return "#aaa"; },
+                        vLineColor: function () { return "#aaa"; },
+                    },
+                    table: {
+                        widths: ["25%", "25%", "25%", "25%"],
+                        body: [
+                            // header row
+                            [
+                                { text: "Location Name", bold: true, fillColor: "#e0e0e0" },
+                                { text: "Part Line", bold: true, fillColor: "#e0e0e0" },
+                                { text: "Quantity", bold: true, fillColor: "#e0e0e0" },
+                                { text: "Value", bold: true, fillColor: "#e0e0e0" },
+                            ],
+                            // data rows
+                            ...locationDetails
+                                .filter((l) => !(dealerDetails.stock || l.stock)) // skip if stock file exists
+                                .map((l) => [
+                                    l.locationName || "—",
+                                    l.partline || "—",
+                                    l.quantity || "—",
+                                    l.value || "—",
+                                ]),
+                        ],
+                    },
+                },
+
 
                 { text: "Contacts", style: "subheader", bold: true, fontsize: 15 },
                 {

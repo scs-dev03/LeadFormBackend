@@ -2,7 +2,8 @@ export interface LocationDetailsDTO {
   dealerId: number;
   locationName: string;
   locationTypeId: number;
-  auditId: number;
+ // auditId: number;
+  auditId: number | number[] | string;
   pincode: string;
   city: string;
   state: string;
