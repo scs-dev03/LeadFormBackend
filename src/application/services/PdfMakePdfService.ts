@@ -54,7 +54,7 @@ export class PdfMakePdfService implements IPdfService {
         const { dealerDetails, locationDetails, contacts } = data;
         const dealerName = dealerDetails.dealerName.toUpperCase();
         const brand = dealerDetails.brand.name.toUpperCase();
-
+        console.log("generating pdf")
         // ---- Build Media File tables (5 locations per table) ----
         const mediaTables = chunkArray(locationDetails, 5).map((group) => {
             const headers = group.map((loc) => ({
@@ -239,7 +239,11 @@ export class PdfMakePdfService implements IPdfService {
                             ...locationDetails.map((l) => [
                                 l.locationName || "—",
                                 l.locationType.name || "—",
-                                l.auditCategory.name || "—",
+                                // l.auditCategory.name || "—",
+                                l.auditCategoryNames && l.auditCategoryNames.length > 0
+                                    ? l.auditCategoryNames.join(", ")
+                                    : "—",
+
                                 l.pinCode || "—",
                                 l.city || "—",
                                 l.state || "—",

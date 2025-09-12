@@ -333,6 +333,7 @@ WHERE d.CreatedBy = @UserId
                 //     ? row.AuditCategoryName.split(',').map((n: string) => n.trim())
                 //     : [];
                 const auditIds = row.AuditCategoryId ? row.AuditCategoryId.split(',') : [];
+                const auditNames = row.AuditCategoryName ? row.AuditCategoryName.split(',') : [];
                 locationsMap.set(row.LocationId, {
                     locationId: row.LocationId,
                     locationName: row.LocationName,
@@ -341,6 +342,7 @@ WHERE d.CreatedBy = @UserId
                    //     id: auditIds[i] ? Number(auditIds[i]) : null,
                     //})),
                     auditCategoryIds: auditIds.map((id: any) => Number(id)), // only IDs
+                    auditCategoryNames: auditNames.map((name: string) => name.trim()),
                     locationType: { id: row.LocationTypeId, name: row.LocationTypeName },
                     pinCode: row.PinCode,
                     city: row.City,

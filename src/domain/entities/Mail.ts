@@ -12,7 +12,9 @@ export interface DealerDetails {
 export interface LocationDetails {
   locationId: number;
   locationName: string;
-  auditCategory: { id: number; name: string };
+  //auditCategory: { id: number; name: string };
+  auditCategoryIds: number[];   // array of IDs
+  auditCategoryNames: string[]; 
   locationType: { id: number; name: string };
   pinCode: string;
   city: string;

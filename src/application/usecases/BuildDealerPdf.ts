@@ -9,8 +9,8 @@ export class BuildDealerPdf {
 
   async execute(params: { userId: number;dealerId:number, brandId: number; ip?: string }) {
     const data = await this.repo.getDealerByBrand(params.brandId,params.dealerId,params.userId);
+    
     //if (!data) throw new Error("No dealer found for this brand and user");
-
     if (!data) {
     console.warn(
       `No dealer found for userId=${params.userId}, dealerId=${params.dealerId}, brandId=${params.brandId}`

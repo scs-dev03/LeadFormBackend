@@ -141,6 +141,7 @@ export class DealerMailController {
             });
         } catch (err: any) {
             // console.error("sendOnboardingMail error:", err);
+            console.log(err);
             res.status(500).json({ error: err.message || "Failed to generate PDF" });
         }
     }
